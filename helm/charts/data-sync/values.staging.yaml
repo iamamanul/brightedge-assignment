@@ -29,7 +29,7 @@ config:
   maxConnections: "100"
 
 redis:
-  # Placeholder only - in real staging this is injected via --set-file / CI secret, not committed.
+  # Placeholder only - in real staging this is injected via --set-file / CI secret.
   password: "REPLACE_ME_STAGING"
 
 serviceMonitor:

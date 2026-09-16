@@ -80,7 +80,7 @@ Monitoring evidence is retained in `monitoring/screenshots/`: `dashboard.png` ca
   safest pre-merge check once a real cluster exists).
 - **Treat `values.yaml` as the single source of truth for the shape of
   config.** Environment files should only ever *override* values that already
-  exist in `values.yaml` — if staging needs a brand-new key, add it to
+  exist in `values.yaml`. If staging needs a brand-new key, add it to
   `values.yaml` first with a sane default, then override it per environment.
   This keeps `helm lint` catching typos instead of silently creating unused
   keys.
@@ -98,5 +98,5 @@ Monitoring evidence is retained in `monitoring/screenshots/`: `dashboard.png` ca
   (`--check --diff`) against a representative host before targeting the full
   `service` group.
 - **DESIGN.md is a living document.** Revisit it whenever traffic patterns,
-  node pool layout, or the secret rotation cadence change — it should always
+  node pool layout, or the secret rotation cadence change, it should always
   reflect the *current* plan, not just the plan at assignment time.

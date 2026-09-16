@@ -84,12 +84,12 @@ Secrets Operator**. ESO polls and updates it automatically.
   password.
 - Only revoke the old password once 100% of pods are on the new revision
   *and* the error-rate dashboards have been clean for a full rollout window
-  (e.g. 10-15 minutes) — this buffer catches any slow stragglers or retry
+(e.g. 10-15 minutes). This buffer catches any slow stragglers or retry
   storms.
 
 **Trade-off:** this depends on Redis supporting a dual-credential window;
 if it doesn't, rotation must instead be sequenced (new password written to
 Redis and the Secret in the same maintenance step) which reintroduces a
-short window where already-running pods can fail auth until they're rolled —
-mitigated by keeping the rollout fast (small `maxUnavailable`, generous
+short window where already-running pods can fail auth until they're rolled.
+This is mitigated by keeping the rollout fast (small `maxUnavailable`, generous
 `maxSurge`) so that window is seconds, not minutes.

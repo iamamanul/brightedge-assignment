@@ -1,4 +1,4 @@
-# data-sync — DevOps Assignment
+# data-sync: DevOps Assignment
 
 Production-grade Kubernetes packaging, infrastructure automation, and observability scaffolding for the `data-sync` microservice.
 
@@ -6,12 +6,12 @@ Production-grade Kubernetes packaging, infrastructure automation, and observabil
 
 | Part | Location | What it is |
 |---|---|---|
-| **Part 1 — Helm Chart** | `helm/charts/data-sync/` | Deployment, Service, HPA, ConfigMap, Secret, PDB, and ServiceMonitor with layered values files. |
-| **Part 1 — Kustomize Overlay** | `standard/data-sync/production/` | Zone topology spread constraints and secret checksum patching applied over rendered production manifests. |
-| **Part 2 — Ansible Automation** | `ansible/roles/be-data-sync/`, `ansible/playbooks/`, `ansible/group_vars/` | Automated provisioning and systemd unit management for CentOS/Rocky 8 VM workloads in the `service` host group. |
-| **Part 3 — Design Document** | `DESIGN.md` | Scaling, noisy-neighbor isolation, and zero-downtime secret rotation. |
-| **Artefact 1 — Trade-offs** | `TRADEOFFS.md` | Technical alternatives, trade-offs, and design rationale. |
-| **Artefact 2 — Architecture** | `ARCHITECTURE.md` | Architectural flow, NFR compliance, operational lifecycle, and repository maintenance. |
+| **Part 1: Helm Chart** | `helm/charts/data-sync/` | Deployment, Service, HPA, ConfigMap, Secret, PDB, and ServiceMonitor with layered values files. |
+| **Part 1: Kustomize Overlay** | `standard/data-sync/production/` | Zone topology spread constraints and secret checksum patching applied over rendered production manifests. |
+| **Part 2: Ansible Automation** | `ansible/roles/be-data-sync/`, `ansible/playbooks/`, `ansible/group_vars/` | Automated provisioning and systemd unit management for CentOS/Rocky 8 VM workloads in the `service` host group. |
+| **Part 3: Design Document** | `DESIGN.md` | Scaling, noisy-neighbor isolation, and zero-downtime secret rotation. |
+| **Artefact 1: Trade-offs** | `TRADEOFFS.md` | Technical alternatives, trade-offs, and design rationale. |
+| **Artefact 2: Architecture** | `ARCHITECTURE.md` | Architectural flow, NFR compliance, operational lifecycle, and repository maintenance. |
 | **Observability Artifacts** | `monitoring/screenshots/`, `monitoring/dashboards/` | Grafana dashboard and Prometheus target screenshots, plus the exportable dashboard JSON. |
 
 ## Verification Commands

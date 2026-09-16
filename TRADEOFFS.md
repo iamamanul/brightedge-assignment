@@ -11,10 +11,10 @@ chosen. Required artefact #1.
 sub-charts except a documented (not implemented) `bitnami/redis` dependency.
 
 **Considered:**
-- *Separate chart per environment* — rejected: guarantees drift between
+- *Separate chart per environment*: rejected because it guarantees drift between
   staging and production over time; a single templated chart with overrides
   keeps the two in sync by construction.
-- *Helmfile / umbrella chart across all BrightEdge services* — rejected for
+- *Helmfile / umbrella chart across all BrightEdge services*: rejected for
   this task: out of scope, adds a second tool to learn for a single-service
   deploy. Worth revisiting once more services follow this pattern.
 
@@ -29,7 +29,7 @@ utilization, because it needs no extra operator and satisfies the assignment
 requirement directly.
 
 **Considered:** KEDA scaling on a custom metric (e.g. Redis queue depth or
-request rate) — this is what's actually recommended in `DESIGN.md` for
+request rate). This is what's actually recommended in `DESIGN.md` for
 solving the real lag-spike problem, since CPU-based HPA reacts *after* pods
 are already saturated. It was not made the chart default because it requires
 KEDA to be installed cluster-wide, which is a platform-level decision outside
@@ -46,10 +46,10 @@ with a placeholder value in every values file, plus a checksum annotation on
 the pod template so rollouts pick up changes automatically.
 
 **Considered:**
-- *Sealed Secrets* (encrypt at rest in git) — a real candidate; not adopted
+- *Sealed Secrets* (encrypt at rest in git): a real candidate, not adopted
   here purely because it requires the `kubeseal` controller to be running in
   the target cluster, which we can't assume for `kind` smoke-testing.
-- *External Secrets Operator + GCP Secret Manager* — the actual recommended
+- *External Secrets Operator + GCP Secret Manager*: the actual recommended
   production approach (documented in `DESIGN.md` Q3 and the chart README),
   not implemented in the chart to keep this exercise runnable with
   `helm template` / `kind` alone, no cloud credentials required.
@@ -65,7 +65,7 @@ are applied via a Kustomize patch on top of `helm template` output, as the
 assignment specifies, rather than adding more `if` blocks to the Deployment
 template.
 
-**Considered:** adding `topologySpreadConstraints` directly as a Helm value —
+**Considered:** adding `topologySpreadConstraints` directly as a Helm value:
 simpler, but the assignment explicitly asks for a Kustomize-based patch
 layer, matching how BrightEdge already treats Kustomize as the
 workload-level configuration point on top of Helm-rendered bases.
@@ -77,7 +77,7 @@ of one; mitigated with `render.sh` which does both steps as one command.
 
 **Chosen:** A custom Nginx virtual configuration mounted into the `nginx:1.27-alpine` stand-in image to serve `/health` JSON and Prometheus-compatible `/metrics` output.
 
-**Considered:** a tiny custom Python/FastAPI image built for this exercise —
+**Considered:** a tiny custom Python/FastAPI image built for this exercise:
 rejected as unnecessary effort per the assignment's own tip ("use placeholder
 image, we don't expect you to build image from scratch").
 
@@ -90,7 +90,7 @@ using `git`, `pip` inside a dedicated virtualenv, and a Jinja2 systemd unit
 with a `notify`-driven restart handler.
 
 **Considered:** a single monolithic playbook with inline tasks instead of a
-role — rejected: breaks the team's existing `be-{service}` role convention
+role. It was rejected because it breaks the team's existing `be-{service}` role convention
 and isn't reusable across environments/hosts.
 
 **Trade-off accepted:** more files/boilerplate for a small role, in exchange
