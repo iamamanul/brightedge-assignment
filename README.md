@@ -1,4 +1,4 @@
-# data-sync — DevOps Assignment Submission
+# data-sync — DevOps Assignment
 
 Production-grade Kubernetes packaging, infrastructure automation, and observability scaffolding for the `data-sync` microservice.
 
