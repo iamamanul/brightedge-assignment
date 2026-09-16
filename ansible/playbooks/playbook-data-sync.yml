@@ -1,0 +1,7 @@
+---
+- name: Deploy data-sync to service VMs
+  hosts: service
+  become: true
+  roles:
+    - role: be-data-sync
+      tags: [install, deploy]

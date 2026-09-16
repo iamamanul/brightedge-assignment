@@ -1,0 +1,48 @@
+# Overrides applied on top of values.yaml for the production environment.
+# Usage: helm upgrade --install data-sync ./helm/charts/data-sync -f values.yaml -f values.production.yaml -n data-sync-production
+
+replicaCount: 3
+
+image:
+  repository: nginx
+  tag: "1.27-alpine"
+  pullPolicy: IfNotPresent
+
+resources:
+  requests:
+    cpu: 250m
+    memory: 256Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi
+
+autoscaling:
+  enabled: true
+  minReplicas: 3
+  maxReplicas: 20
+  targetCPUUtilizationPercentage: 65
+  behavior:
+    scaleDown:
+      stabilizationWindowSeconds: 120
+    scaleUp:
+      stabilizationWindowSeconds: 0
+      policies:
+        - type: Pods
+          value: 4
+          periodSeconds: 15
+
+config:
+  appEnv: "production"
+  redisHost: "redis-master.data-sync.svc.cluster.local"
+  redisPort: "6379"
+  logLevel: "INFO"
+  workers: "4"
+  maxConnections: "100"
+
+redis:
+  # Placeholder only - real production password is injected via CI/CD from GCP Secret Manager,
+  # never committed to this file. See README "Secret handling".
+  password: "REPLACE_ME_PRODUCTION"
+
+podDisruptionBudget:
+  minAvailable: 2

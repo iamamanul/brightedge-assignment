@@ -1,0 +1,21 @@
+---
+# Default variables for be-data-sync. Override in group_vars/service.yml
+# or host_vars per environment.
+
+data_sync_repo_url: "https://github.com/brightedge/data-sync.git"
+data_sync_repo_version: "main"
+data_sync_install_dir: "/srv/data-sync"
+data_sync_venv_dir: "{{ data_sync_install_dir }}/venv"
+data_sync_python_package: "python39"
+data_sync_pip_package: "python39-pip"
+
+data_sync_service_user: "data-sync"
+data_sync_service_group: "data-sync"
+
+# Overridden per-environment via group_vars
+data_sync_app_env: "staging"
+data_sync_redis_host: "localhost"
+data_sync_redis_port: 6379
+data_sync_log_level: "INFO"
+data_sync_workers: 4
+data_sync_max_connections: 100

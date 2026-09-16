@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "data-sync.fullname" . }}-nginx-conf
+  labels:
+    {{- include "data-sync.labels" . | nindent 4 }}
+data:
+  default.conf: |
+    server {
+        listen 8080;
+        server_name localhost;
+
+        location / {
+            root /usr/share/nginx/html;
+            index index.html index.htm;
+        }
+
+        location /health {
+            default_type application/json;
+            return 200 "{\"status\":\"ok\"}\n";
+        }
+
+        location /metrics {
+            default_type text/plain;
+            return 200 "# HELP data_sync_up Service operational status\n# TYPE data_sync_up gauge\ndata_sync_up 1\n# HELP data_sync_events_total Total synchronization cycles completed\n# TYPE data_sync_events_total counter\ndata_sync_events_total 42\n";
+        }
+    }

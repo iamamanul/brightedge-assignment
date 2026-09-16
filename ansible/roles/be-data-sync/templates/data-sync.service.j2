@@ -1,0 +1,21 @@
+[Unit]
+Description=BrightEdge data-sync service
+After=network.target
+
+[Service]
+Type=simple
+User={{ data_sync_service_user }}
+Group={{ data_sync_service_group }}
+WorkingDirectory={{ data_sync_install_dir }}
+Environment=APP_ENV={{ data_sync_app_env }}
+Environment=REDIS_HOST={{ data_sync_redis_host }}
+Environment=REDIS_PORT={{ data_sync_redis_port }}
+Environment=LOG_LEVEL={{ data_sync_log_level }}
+Environment=WORKERS={{ data_sync_workers }}
+Environment=MAX_CONNECTIONS={{ data_sync_max_connections }}
+ExecStart={{ data_sync_venv_dir }}/bin/uvicorn app.main:app --host 0.0.0.0 --port 8080 --workers {{ data_sync_workers }}
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

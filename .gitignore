@@ -1,0 +1,6 @@
+*.zip
+*.swp
+*.bak
+*~
+*:Zone.Identifier
+.DS_Store

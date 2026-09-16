@@ -1,0 +1,69 @@
+# Default values for data-sync.
+# These are SAFE, LOCAL defaults meant for `helm template` / kind smoke-testing,
+# not for staging or production (use values.staging.yaml / values.production.yaml for those).
+
+replicaCount: 1
+
+image:
+  repository: nginx        # placeholder image - swap for the real data-sync image
+  tag: "1.27-alpine"
+  pullPolicy: IfNotPresent
+
+nameOverride: ""
+fullnameOverride: ""
+
+service:
+  port: 8080
+  targetPort: 8080
+
+resources:
+  requests:
+    cpu: 50m
+    memory: 64Mi
+  limits:
+    cpu: 200m
+    memory: 128Mi
+
+autoscaling:
+  enabled: true
+  minReplicas: 1
+  maxReplicas: 3
+  targetCPUUtilizationPercentage: 70
+  behavior: {}
+
+probes:
+  path: /health
+  liveness:
+    initialDelaySeconds: 5
+    periodSeconds: 10
+    timeoutSeconds: 2
+    failureThreshold: 3
+  readiness:
+    initialDelaySeconds: 5
+    periodSeconds: 5
+    timeoutSeconds: 2
+    failureThreshold: 3
+
+config:
+  appEnv: "staging"
+  redisHost: "localhost"
+  redisPort: "6379"
+  logLevel: "DEBUG"
+  workers: "1"
+  maxConnections: "20"
+
+redis:
+  # Local/dev password only. Never real. Override per-environment via --set or a sealed secret.
+  password: "changeme-local"
+
+podDisruptionBudget:
+  minAvailable: 1
+
+serviceMonitor:
+  enabled: true
+  path: /metrics
+  port: http
+  releaseLabel: kube-prometheus-stack
+  interval: 30s
+
+podAnnotations: {}

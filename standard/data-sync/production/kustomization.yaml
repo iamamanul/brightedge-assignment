@@ -1,0 +1,35 @@
+# This overlay is meant to be run AFTER `helm template` renders the chart to a plain
+# manifest. It layers cluster-wide, non-Helm-owned concerns (zone spreading, forced
+# rollout on secret change) on top without forking the chart itself.
+#
+# Typical usage:
+#   helm template data-sync ./helm/charts/data-sync \
+#     -f ./helm/charts/data-sync/values.yaml \
+#     -f ./helm/charts/data-sync/values.production.yaml \
+#     > standard/data-sync/production/base-rendered.yaml
+#   kubectl kustomize standard/data-sync/production | kubectl apply -f -
+
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - base-rendered.yaml   # output of `helm template` for the production values, see above
+
+patches:
+  - target:
+      kind: Deployment
+      name: data-sync
+    patch: |-
+      - op: add
+        path: /spec/template/spec/topologySpreadConstraints
+        value:
+          - maxSkew: 1
+            topologyKey: topology.kubernetes.io/zone
+            whenUnsatisfiable: DoNotSchedule
+            labelSelector:
+              matchLabels:
+                app.kubernetes.io/name: data-sync
+                app.kubernetes.io/instance: data-sync
+      - op: add
+        path: /spec/template/metadata/annotations/SECRET_CHECKSUM
+        value: "986c0b9dd0297bddeb114fb8d5b677a2ea38a78304442d8badaa98debcf96ba7"

@@ -1,0 +1,79 @@
+---
+- name: Only run be-data-sync on service hosts
+  ansible.builtin.assert:
+    that:
+      - be_role is defined
+    fail_msg: "be_role must be set on this host (expected 'service')."
+  tags: [install, deploy]
+
+- name: End play early on non-service hosts
+  ansible.builtin.meta: end_host
+  when: be_role != 'service'
+
+- name: Install Python 3.9 and pip
+  ansible.builtin.yum:
+    name:
+      - "{{ data_sync_python_package }}"
+      - "{{ data_sync_pip_package }}"
+    state: present
+  tags: [install]
+
+- name: Create service user
+  ansible.builtin.user:
+    name: "{{ data_sync_service_user }}"
+    system: true
+    shell: /sbin/nologin
+    create_home: false
+  tags: [install]
+
+- name: Ensure install directory exists with correct ownership
+  ansible.builtin.file:
+    path: "{{ data_sync_install_dir }}"
+    state: directory
+    owner: "{{ data_sync_service_user }}"
+    group: "{{ data_sync_service_group }}"
+    mode: "0750"
+  tags: [install, deploy]
+
+- name: Clone or update data-sync repo
+  ansible.builtin.git:
+    repo: "{{ data_sync_repo_url }}"
+    dest: "{{ data_sync_install_dir }}"
+    version: "{{ data_sync_repo_version }}"
+    force: true
+  become: true
+  become_user: "{{ data_sync_service_user }}"
+  notify: Restart data-sync
+  tags: [deploy]
+
+- name: Create virtualenv and install Python dependencies
+  ansible.builtin.pip:
+    requirements: "{{ data_sync_install_dir }}/requirements.txt"
+    virtualenv: "{{ data_sync_venv_dir }}"
+    virtualenv_command: "/usr/bin/python3.9 -m venv"
+  become: true
+  become_user: "{{ data_sync_service_user }}"
+  notify: Restart data-sync
+  tags: [deploy]
+
+- name: Deploy systemd unit from template
+  ansible.builtin.template:
+    src: data-sync.service.j2
+    dest: /etc/systemd/system/data-sync.service
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Restart data-sync
+  tags: [deploy]
+
+- name: Reload systemd daemon
+  ansible.builtin.systemd:
+    daemon_reload: true
+  tags: [deploy]
+
+- name: Ensure data-sync service is enabled and running
+  ansible.builtin.systemd:
+    name: data-sync
+    enabled: true
+    state: started
+  tags: [deploy]

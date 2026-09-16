@@ -1,0 +1,42 @@
+# Overrides applied on top of values.yaml for the staging environment.
+# Usage: helm upgrade --install data-sync ./helm/charts/data-sync -f values.yaml -f values.staging.yaml -n data-sync-staging
+
+replicaCount: 2
+
+image:
+  repository: nginx
+  tag: "1.27-alpine"
+  pullPolicy: IfNotPresent
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 500m
+    memory: 256Mi
+
+autoscaling:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 6
+  targetCPUUtilizationPercentage: 70
+
+config:
+  appEnv: "staging"
+  redisHost: "redis-master.data-sync-staging.svc.cluster.local"
+  redisPort: "6379"
+  logLevel: "INFO"
+  workers: "4"
+  maxConnections: "100"
+
+redis:
+  # Placeholder only - in real staging this is injected via --set-file / CI secret, not committed.
+  password: "REPLACE_ME_STAGING"
+
+serviceMonitor:
+  enabled: true
+  path: /metrics
+  port: http
+  releaseLabel: kube-prometheus-stack
+  interval: 30s

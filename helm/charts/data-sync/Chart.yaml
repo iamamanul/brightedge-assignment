@@ -1,0 +1,12 @@
+apiVersion: v2
+name: data-sync
+description: Helm chart for the data-sync FastAPI microservice (BrightEdge SEO analytics platform)
+type: application
+version: 0.1.0
+appVersion: "1.0.0"
+keywords:
+  - fastapi
+  - data-sync
+  - brightedge
+maintainers:
+  - name: BrightEdge Platform Team

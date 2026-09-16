@@ -1,0 +1,7 @@
+---
+# Applies to all hosts in the [service] inventory group.
+# Override per-host in host_vars/ if a single VM needs to differ.
+
+data_sync_app_env: "staging"
+data_sync_redis_host: "redis-master.internal.brightedge.example"
+data_sync_log_level: "INFO"

@@ -1,0 +1,194 @@
+{
+  "annotations": {
+    "list": []
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": null,
+  "uid": "data-sync-overview",
+  "title": "Data Sync Microservice Overview",
+  "tags": [
+    "data-sync",
+    "brightedge"
+  ],
+  "timezone": "browser",
+  "schemaVersion": 38,
+  "version": 6,
+  "refresh": "5s",
+  "time": {
+    "from": "now-15m",
+    "to": "now"
+  },
+  "panels": [
+    {
+      "id": 1,
+      "title": "Pod CPU Utilization (Rate vs Request)",
+      "type": "timeseries",
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 0,
+        "y": 0
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "sum by (pod) (rate(container_cpu_usage_seconds_total{namespace=~\"data-sync-.*|test-sync\", pod=~\"data-sync-.*\"}[5m]))",
+          "legendFormat": "Usage - {{pod}}",
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "sum by (pod) (kube_pod_container_resource_limits{namespace=~\"data-sync-.*|test-sync\", resource=\"cpu\", pod=~\"data-sync-.*\"})",
+          "legendFormat": "Limit - {{pod}}",
+          "refId": "B"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "title": "HPA Desired vs Current Replicas",
+      "type": "stat",
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 12,
+        "y": 0
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "max(kube_deployment_status_replicas{namespace=~\"data-sync-.*|test-sync\", deployment=~\"data-sync.*\"}) by (namespace)",
+          "legendFormat": "Current - {{namespace}}",
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "max(kube_deployment_spec_replicas{namespace=~\"data-sync-.*|test-sync\", deployment=~\"data-sync.*\"}) by (namespace)",
+          "legendFormat": "Desired - {{namespace}}",
+          "refId": "B"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "title": "Pod Memory Working Set vs Limits",
+      "type": "timeseries",
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 0,
+        "y": 7
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "bytes"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "sum by (pod) (container_memory_working_set_bytes{namespace=~\"data-sync-.*|test-sync\", pod=~\"data-sync-.*\"})",
+          "legendFormat": "Set - {{pod}}",
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "sum by (pod) (kube_pod_container_resource_limits{namespace=~\"data-sync-.*|test-sync\", resource=\"memory\", pod=~\"data-sync-.*\"})",
+          "legendFormat": "Limit - {{pod}}",
+          "refId": "B"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "title": "Service Operational Health (data_sync_up)",
+      "type": "timeseries",
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 12,
+        "y": 7
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "sum(data_sync_up{namespace=~\"data-sync-.*|test-sync\"})",
+          "legendFormat": "Healthy Instances",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "title": "Synchronization Event Rate",
+      "type": "timeseries",
+      "gridPos": {
+        "h": 6,
+        "w": 12,
+        "x": 0,
+        "y": 14
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "sum(rate(data_sync_events_total{namespace=~\"data-sync-.*|test-sync\"}[5m]))",
+          "legendFormat": "Events / sec",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "title": "Total Completed Sync Events",
+      "type": "stat",
+      "gridPos": {
+        "h": 6,
+        "w": 12,
+        "x": 12,
+        "y": 14
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "expr": "sum(data_sync_events_total{namespace=~\"data-sync-.*|test-sync\"})",
+          "legendFormat": "Total Events",
+          "refId": "A"
+        }
+      ]
+    }
+  ]
+}
