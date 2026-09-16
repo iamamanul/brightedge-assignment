@@ -1,5 +1,3 @@
-# Overrides applied on top of values.yaml for the production environment.
-# Usage: helm upgrade --install data-sync ./helm/charts/data-sync -f values.yaml -f values.production.yaml -n data-sync-production
 
 replicaCount: 3
 

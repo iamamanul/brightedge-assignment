@@ -1,6 +1,3 @@
-# Default values for data-sync.
-# These are SAFE, LOCAL defaults meant for `helm template` / kind smoke-testing,
-# not for staging or production (use values.staging.yaml / values.production.yaml for those).
 
 replicaCount: 1
 

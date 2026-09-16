@@ -1,14 +1,3 @@
-# This overlay is meant to be run AFTER `helm template` renders the chart to a plain
-# manifest. It layers cluster-wide, non-Helm-owned concerns (zone spreading, forced
-# rollout on secret change) on top without forking the chart itself.
-#
-# Typical usage:
-#   helm template data-sync ./helm/charts/data-sync \
-#     -f ./helm/charts/data-sync/values.yaml \
-#     -f ./helm/charts/data-sync/values.production.yaml \
-#     > standard/data-sync/production/base-rendered.yaml
-#   kubectl kustomize standard/data-sync/production | kubectl apply -f -
-
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
